@@ -1,0 +1,89 @@
+/*
+ * Nunito stands in for Duolingo's own faces: Feather Bold (titles) and DIN Next
+ * Rounded (everything else) are licensed to Duolingo and not ours to ship. It
+ * has the same round terminals and holds up at 900, which is where Duo's
+ * headlines live.
+ */
+@import "@fontsource-variable/nunito/wght.css";
+
+/*
+ * Duolingo's palette, by its own names (ART-DIRECTION.md). Each colour that
+ * can be pressed has a `-lip`: the darker band under a button or card that
+ * makes it look like it sticks up off the page.
+ */
+:root {
+  --feather: #58cc02;
+  --feather-lip: #58a700;
+  --mask: #89e219;
+  --macaw: #1cb0f6;
+  --macaw-lip: #1899d6;
+  --cardinal: #ff4b4b;
+  --cardinal-lip: #ea2b2b;
+  --bee: #ffc800;
+  --bee-lip: #e7a601;
+  --fox: #ff9600;
+  --fox-lip: #e08600;
+  --beetle: #ce82ff;
+  --beetle-lip: #a568cc;
+  --humpback: #2b70c9;
+
+  --eel: #4b4b4b;
+  --wolf: #777777;
+  --hare: #afafaf;
+  --swan: #e5e5e5;
+  --polar: #f7f7f7;
+  --snow: #ffffff;
+
+  /* Duolingo's dark mode, for the deck's own tools (notes, the cut, the path). */
+  --night: #131f24;
+  --night-raised: #202f36;
+  --night-line: #37464f;
+  --night-text: #f1f7fb;
+  --night-dim: #8fa3ad;
+
+  --backdrop: #ffffff;
+  --background: #ffffff;
+  --surface: var(--polar);
+  --border: var(--swan);
+  --foreground: var(--eel);
+
+  --sans: "Nunito Variable", "Nunito", ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  --mono: var(--sans);
+  /* The "serious" slides (registry `serious`) drop Duo for a plain grotesk. */
+  --plain: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --motion-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --motion-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Duo's springy settle: overshoots a hair, then lands. */
+  --motion-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--backdrop);
+  color: var(--foreground);
+  font-family: var(--sans);
+  font-weight: 600;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,343 @@
+/* The cut — see the docblock in KeepPanel.tsx. */
+
+.keep {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+/*
+ * The handle. Invisible at rest: no fill, no border, and an eye drawn at 0
+ * opacity. Hovering brings up a faint trim and the glyph, enough to find and
+ * not enough to notice from a seat.
+ */
+.keep-handle {
+  pointer-events: auto;
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--wolf);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.keep-handle svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.keep-handle:hover,
+.keep-handle:focus-visible,
+.keep-handle[aria-expanded="true"] {
+  opacity: 1;
+  border-color: var(--swan);
+  background: var(--snow);
+}
+
+.keep-sheet {
+  pointer-events: auto;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.keep-dismiss {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: color-mix(in srgb, var(--night) 70%, transparent);
+  backdrop-filter: blur(8px);
+  cursor: default;
+}
+
+.keep-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1120px, calc(100% - 96px));
+  max-height: calc(100% - 96px);
+  overflow: hidden;
+  border: 2px solid var(--night-line);
+  border-radius: 20px;
+  background: var(--night);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  color: var(--night-text);
+  font-family: var(--sans);
+}
+
+.keep-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 22px 26px 18px;
+  border-bottom: 2px solid var(--night-line);
+}
+
+.keep-head h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.keep-head p {
+  margin: 0;
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--night-dim);
+}
+
+.keep-reset {
+  flex: none;
+  padding: 7px 14px;
+  border: 2px solid var(--night-line);
+  border-bottom-width: 4px;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--macaw);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.keep-reset:hover:not(:disabled) {
+  background: var(--night-raised);
+}
+
+.keep-reset:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.keep-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 26px 26px;
+}
+
+/*
+ * The standard properties, for engines without the pseudo-elements. They are
+ * fenced off because Chrome — the only browser this deck is ever shown in —
+ * drops every ::-webkit-scrollbar rule the moment either one is set, and the
+ * pseudo-elements can do the inset overlay thumb below that `thin` cannot.
+ */
+@supports not selector(::-webkit-scrollbar) {
+  .keep-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--night-line) transparent;
+  }
+}
+
+/*
+ * The scrollbar. Windows' default is a wide light-grey gutter with arrow
+ * buttons at each end — an OS widget sitting on a dark rounded panel, flush
+ * against its corner. So: no buttons, no track fill, and a thumb held off
+ * every edge by a transparent border (background-clip keeps the paint inside
+ * the padding box), which both slims the bar to ~6px of visible pill and
+ * stops it touching the panel's rounded bottom-right corner. The grid's right
+ * column clears it because .keep-scroll's 26px right padding is wider than the
+ * 14px gutter.
+ */
+.keep-scroll::-webkit-scrollbar {
+  width: 14px;
+}
+
+.keep-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.keep-scroll::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 999px;
+  background-color: var(--night-line);
+  background-clip: padding-box;
+}
+
+.keep-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--night-dim);
+}
+
+.keep-scroll::-webkit-scrollbar-thumb:active {
+  background-color: var(--macaw);
+}
+
+/* The arrow buttons and the corner square, gone. */
+.keep-scroll::-webkit-scrollbar-button,
+.keep-scroll::-webkit-scrollbar-corner {
+  display: none;
+}
+
+.keep-group {
+  padding-top: 22px;
+}
+
+.keep-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--night-dim);
+}
+
+.keep-group h3 span {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--night-line);
+}
+
+.keep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 12px;
+}
+
+.keep-card {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.keep-slot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  background: var(--night-raised);
+}
+
+.keep-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background: #ffffff;
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease;
+}
+
+.keep-card::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 3px solid transparent;
+  border-radius: 14px;
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.keep-card:hover::after,
+.keep-card:focus-visible::after {
+  border-color: var(--night-line);
+}
+
+.keep-card.is-current::after {
+  border-color: var(--feather);
+}
+
+/* Set aside: dimmed, drained of colour, with the shut eye over it. */
+.keep-card.is-off .keep-thumb {
+  opacity: 0.26;
+  filter: grayscale(1);
+}
+
+.keep-badge {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--night) 80%, transparent);
+  color: var(--night-text);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.keep-badge svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.keep-card:hover .keep-badge,
+.keep-card:focus-visible .keep-badge {
+  opacity: 1;
+}
+
+/* A hidden slide says so whether or not the pointer is anywhere near it. */
+.keep-card.is-off .keep-badge {
+  opacity: 1;
+  top: 50%;
+  right: 50%;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+  background: color-mix(in srgb, var(--night) 88%, transparent);
+}
+
+.keep-card.is-off .keep-badge svg {
+  width: 24px;
+  height: 24px;
+}
+
+.keep-n {
+  position: absolute;
+  left: 7px;
+  bottom: 7px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--night) 80%, transparent);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--night-text);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.keep-card:hover .keep-n,
+.keep-card:focus-visible .keep-n,
+.keep-card.is-off .keep-n {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keep * {
+    transition: none !important;
+  }
+}

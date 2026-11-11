@@ -1,0 +1,422 @@
+/*
+ * The path — see the docblock in SlideRoute.tsx.
+ *
+ * Duolingo's dark mode: a night panel, units in their own colour, lesson
+ * nodes as round 3D buttons with a lip that sink when pressed. Each unit sets
+ * `--unit` and `--unit-lip` from its chapter colour.
+ */
+
+.route {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  height: 116px;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 32px;
+  background: var(--night);
+  border-top: 2px solid var(--night-line);
+  color: var(--night-text);
+  font-family: var(--sans);
+  /*
+   * A drawer: it rises out of the bottom edge on the deck's own page-turn
+   * curve, so it reads as one smooth travel rather than a fade. Hidden, it
+   * waits a full height below the edge; nothing fades on the way, so the
+   * panel stays solid while it moves.
+   */
+  translate: 0 100%;
+  visibility: hidden;
+  /* Exit faster than enter. */
+  transition:
+    translate 280ms cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s linear 280ms;
+}
+
+.route.is-open {
+  translate: 0 0;
+  visibility: visible;
+  transition:
+    translate 520ms cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s;
+}
+
+/* The contents settle a beat after the panel, so the rise reads as one move. */
+.route > * {
+  opacity: 0;
+  transition: opacity 150ms var(--motion-ease-out);
+}
+
+.route.is-open > * {
+  opacity: 1;
+  transition: opacity 320ms var(--motion-ease-out) 120ms;
+}
+
+/* ---------- the peek: the path at rest ---------- */
+
+/*
+ * One tiny dot per slide, units set apart, you a bigger dot. White with a
+ * difference blend, so it reads dark on white slides and light on anything
+ * dark without knowing which it sits on.
+ */
+.route-peek {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  z-index: 19;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  mix-blend-mode: difference;
+  opacity: 0.4;
+  translate: -50% 0;
+  cursor: pointer;
+  transition:
+    opacity 240ms var(--motion-ease-out),
+    translate 240ms var(--motion-ease-out);
+}
+
+.route-peek.is-away {
+  opacity: 0;
+  translate: -50% 8px;
+  pointer-events: none;
+  transition:
+    opacity 150ms var(--motion-ease-out),
+    translate 150ms var(--motion-ease-out);
+}
+
+.route-peek-leg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.route-peek i {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.route-peek i.is-past {
+  opacity: 0.8;
+}
+
+.route-peek i.is-current {
+  width: 8px;
+  height: 8px;
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .route-peek:not(.is-away):hover {
+    opacity: 0.8;
+  }
+}
+
+.route-peek:focus-visible {
+  opacity: 1;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* ---------- where you are: the unit banner ---------- */
+
+.route-where {
+  justify-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 10px 16px 12px;
+  border-radius: 14px;
+  background: var(--unit, var(--night-raised));
+  box-shadow: 0 4px 0 var(--unit-lip, var(--night-line));
+  color: #fff;
+}
+
+.route-chapter {
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.route-title {
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 22px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- the path ---------- */
+
+.route-trail {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+}
+
+.route-leg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.route-leg-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--night-dim);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 150ms var(--motion-ease-out), background-color 150ms var(--motion-ease-out);
+}
+
+.route-leg.is-here .route-leg-label {
+  color: var(--unit);
+}
+
+/* The digit that jumps here, set like a key cap. */
+.route-key {
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 5px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.route-dots {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0 14px;
+}
+
+/* A lesson node: a round button in the unit's colour, standing on its lip. */
+.route-dot {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--night-line);
+  box-shadow: 0 4px 0 #2a373e;
+  cursor: pointer;
+  transition:
+    background-color 150ms var(--motion-ease-out),
+    box-shadow 75ms ease,
+    translate 75ms ease;
+}
+
+.route-dot.is-past,
+.route-dot.is-current {
+  background: var(--unit);
+  box-shadow: 0 4px 0 var(--unit-lip);
+}
+
+/* A done lesson carries a tick; the one you're on, a star. */
+.route-dot.is-past::before,
+.route-dot.is-current::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  mask: var(--glyph) center / 14px no-repeat;
+}
+
+.route-dot.is-past {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.6' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.route-dot.is-current {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.2l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.9l-4.2 2.3.8-4.7L1.2 6.2l4.7-.7z'/%3E%3C/svg%3E");
+}
+
+/* You: the ring Duo draws round the lesson you're on. */
+.route-you {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 42px;
+  height: 42px;
+  margin-top: 2px;
+  box-sizing: border-box;
+  border: 4px solid var(--night-line);
+  border-radius: 50%;
+  pointer-events: none;
+  /* Real travel down the path gets the travel curve. */
+  transition: transform 400ms var(--motion-ease-in-out);
+}
+
+/* ---------- the tip over a node ---------- */
+
+.route-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 2px solid var(--night-line);
+  border-radius: 12px;
+  background: var(--night-raised);
+  color: var(--night-text);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 18px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% 4px;
+  transition:
+    opacity 150ms var(--motion-ease-out),
+    translate 150ms var(--motion-ease-out);
+}
+
+.route-tip-n {
+  color: var(--night-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.route-dot:focus-visible .route-tip {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .route-dot:hover {
+    filter: brightness(1.1);
+  }
+
+  .route-dot:hover .route-tip {
+    opacity: 1;
+    translate: -50% 0;
+  }
+
+  .route-leg-label:hover {
+    color: var(--night-text);
+    background: var(--night-raised);
+  }
+}
+
+/* Pressables sink onto their lip. */
+.route-dot:active {
+  translate: 0 4px;
+  box-shadow: 0 0 0 transparent;
+}
+
+.route-leg-label:active {
+  translate: 0 1px;
+  transition-duration: 75ms;
+}
+
+.route-dot:focus-visible,
+.route-leg-label:focus-visible {
+  outline: 2px solid var(--macaw);
+  outline-offset: 3px;
+}
+
+/* ---------- the count ---------- */
+
+.route-count {
+  justify-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.route-count p {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+.route-num {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.route-slash {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--night-dim);
+}
+
+.route-clock {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--night-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.route-clock.is-over {
+  color: var(--cardinal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No travel: the panel simply fades in place. */
+  .route {
+    translate: 0 0;
+    opacity: 0;
+    transition:
+      opacity 150ms var(--motion-ease-out),
+      visibility 0s linear 150ms;
+  }
+
+  .route.is-open {
+    translate: 0 0;
+    opacity: 1;
+    transition:
+      opacity 240ms var(--motion-ease-out),
+      visibility 0s;
+  }
+
+  .route-peek,
+  .route-peek.is-away {
+    translate: -50% 0;
+  }
+
+  .route-you {
+    transition: none;
+  }
+}

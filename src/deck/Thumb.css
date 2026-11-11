@@ -1,0 +1,19 @@
+/* Only the fitting; the frame's look belongs to the list that draws it. */
+
+.thumb {
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.thumb-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  background: #ffffff;
+  transform-origin: 0 0;
+  pointer-events: none;
+}

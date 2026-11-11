@@ -1,0 +1,104 @@
+/*
+ * Edit mode's tags over the slide (ClipTags.tsx). Slide pixels: the stage
+ * scales them with everything else.
+ *
+ * Night cards with a dashed edge, so they can't be mistaken for slide content
+ * (slides are white and solid). Macaw marks footage and beetle the MVP, the
+ * same keys as the notes panel.
+ */
+
+.clip-tags {
+  position: absolute;
+  top: 36px;
+  left: 36px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 440px;
+  pointer-events: none;
+}
+
+.clip-tag {
+  --kind: var(--night-text);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 18px 15px;
+  border: 3px dashed color-mix(in srgb, var(--kind) 70%, transparent);
+  border-left: 8px solid var(--kind);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--night) 92%, transparent);
+  color: var(--night-text);
+  font-family: var(--sans);
+}
+
+.clip-tag.is-footage {
+  --kind: var(--macaw);
+}
+
+.clip-tag.is-prototype {
+  --kind: var(--beetle);
+}
+
+.clip-tag.is-empty {
+  --kind: var(--night-dim);
+  align-self: flex-start;
+  border-left-width: 3px;
+}
+
+.clip-tag.is-empty .clip-tag-label {
+  font-size: 18px;
+  color: var(--night-dim);
+}
+
+.clip-tag.is-done {
+  border-style: solid;
+  opacity: 0.8;
+}
+
+.clip-tag-kind {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--kind);
+}
+
+.clip-tag-kind svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.clip-tag-kind b {
+  padding: 1px 8px;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.clip-tag-done {
+  margin-left: auto;
+  color: var(--feather);
+}
+
+.clip-tag-done::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 1px;
+}
+
+.clip-tag-label {
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.3;
+}

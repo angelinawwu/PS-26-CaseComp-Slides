@@ -1,0 +1,144 @@
+.deck {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--backdrop);
+  overflow: hidden;
+}
+
+.deck-view {
+  position: absolute;
+  inset: 0;
+}
+
+.stage-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  background: var(--background);
+}
+
+.slide-shell {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.slide-shell-leave {
+  z-index: 0;
+  pointer-events: none;
+}
+
+.slide-shell-enter {
+  z-index: 1;
+}
+
+.hit {
+  position: absolute;
+  top: 0;
+  bottom: 48px;
+  width: 18%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hit:disabled {
+  cursor: default;
+}
+
+.hit-prev {
+  left: 0;
+}
+
+.hit-next {
+  right: 0;
+}
+
+/*
+ * Edit mode (EditContext.tsx). The slide steps left to make room for the notes
+ * panel; Stage re-measures its frame, so the slide rescales and stays 16:9.
+ */
+.deck {
+  --notes-width: 440px;
+}
+
+.deck.is-edit .deck-view,
+.deck.is-edit .keep {
+  right: var(--notes-width);
+}
+
+/* In edit mode the slide sits on night, so its edges show. */
+.deck.is-edit {
+  --backdrop: var(--night);
+}
+
+/*
+ * The handles: edit (top left), fullscreen and the cut (top right). Invisible
+ * at rest, so nothing reads as chrome from the back of the room; the pointer
+ * finds them as a soft Duo-grey tile.
+ */
+.edit-handle,
+.fullscreen-handle {
+  position: absolute;
+  top: 18px;
+  z-index: 41;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--wolf);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease,
+    transform 0.16s var(--motion-ease-out);
+}
+
+.edit-handle {
+  left: 20px;
+}
+
+.fullscreen-handle {
+  right: 68px;
+}
+
+.edit-handle svg,
+.fullscreen-handle svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.edit-handle:hover,
+.edit-handle:focus-visible,
+.fullscreen-handle:hover,
+.fullscreen-handle:focus-visible {
+  opacity: 1;
+  border-color: var(--swan);
+  background: var(--snow);
+}
+
+.fullscreen-handle:active,
+.edit-handle:active {
+  transform: translateY(1px);
+}
+
+.deck.is-edit .fullscreen-handle {
+  right: calc(var(--notes-width) + 68px);
+}
